@@ -31,6 +31,15 @@ export class AuthService {
 
   async register(dto: CreateUserDto) {
     try {
+      const user = this.usersService.findByEmail(dto.email);
+
+      if (user) {
+        throw new HttpException(
+          'Пользователь с тиким "E-Mail" уже зарегестрирован.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const hashedPassword = await hash(dto.password, 10);
       const userData = await this.usersService.create({
         ...dto,
