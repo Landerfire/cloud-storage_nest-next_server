@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FileEntity, FileType } from './entities/file.entity';
+import slugify from 'slugify';
 
 @Injectable()
 export class FilesService {
@@ -27,9 +28,14 @@ export class FilesService {
   }
 
   create(file: Express.Multer.File, userId: number) {
+    const bufferName = Buffer.from(file.originalname, 'latin1').toString(
+      'utf8',
+    );
+    const slugName = slugify(bufferName);
+
     return this.repository.save({
       filename: file.filename,
-      originalName: file.originalname,
+      originalName: slugName,
       size: file.size,
       mimetype: file.mimetype,
       user: { id: userId },
