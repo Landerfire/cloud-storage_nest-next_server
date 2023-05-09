@@ -31,7 +31,7 @@ export class AuthService {
 
   async register(dto: CreateUserDto) {
     try {
-      const user = this.usersService.findByEmail(dto.email);
+      const user = await this.usersService.findByEmail(dto.email);
 
       if (user) {
         throw new HttpException(
